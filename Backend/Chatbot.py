@@ -1,26 +1,20 @@
-from google import genai
 import os
 from dotenv import load_dotenv
+from google import genai
 
+# Load environment variables
 load_dotenv()
 
+# Initialize the client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 SYSTEM_PROMPT = """
 You are a medical assistant chatbot.
-
-Formatting rules:
-- Use short paragraphs
-- Use bullet points where appropriate
-- Use numbered lists for steps
-- Highlight section titles in bold
-- Do NOT write long paragraphs
-- Keep answers clean and structured
-
-Medical rules:
-- Give general health advice only
-- Do NOT diagnose diseases
-- Always recommend consulting a doctor
+Rules:
+- General advice only.
+- No diagnosis.
+- Recommend consulting a doctor.
+- Short, structured answers.
 """
 
 def get_chatbot_reply(query, user_context):
@@ -28,21 +22,20 @@ def get_chatbot_reply(query, user_context):
     bmi = user_context.get("bmi", "N/A")
     risk = user_context.get("risk_level", "N/A")
 
-    prompt = f"""
-{SYSTEM_PROMPT}
+    # Construct the message
+    full_prompt = f"{SYSTEM_PROMPT}\n\nPatient context:\n- Disease: {disease}\n- BMI: {bmi}\n- Risk: {risk}\n\nUser question:\n{query}"
 
-User health summary:
-Predicted disease: {disease}
-BMI: {bmi}
-Risk level: {risk}
+    try:
+        # Use a model name from your specific list (e.g., gemini-2.0-flash)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=full_prompt
+        )
+        return response.text
+    except Exception as e:
+        return f"Error: {e}"
 
-User question:
-{query}
-"""
-
-    response = client.models.generate_content(
-        model="models/gemini-flash-latest",
-        contents=prompt
-    )
-
-    return response.text
+# Example usage for testing:
+if __name__ == "__main__":
+    context = {"final_disease": "Hypertension", "bmi": "24.5", "risk_level": "Moderate"}
+    print(get_chatbot_reply("What should I eat for breakfast?", context))
