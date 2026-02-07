@@ -1,3 +1,28 @@
-.env
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+
+# ML models (VERY IMPORTANT)
+*.pkl
+models/
+*.joblib
+
+# Data files (optional)
+*.csv
+*.xlsx
+
+# Ollama (just in case)
+.ollama/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

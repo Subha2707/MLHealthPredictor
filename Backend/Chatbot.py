@@ -1,41 +1,54 @@
-import os
-from dotenv import load_dotenv
-from google import genai
+import ollama
 
-# Load environment variables
-load_dotenv()
-
-# Initialize the client
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 SYSTEM_PROMPT = """
-You are a medical assistant chatbot.
+You are a friendly, intelligent medical assistant chatbot.
+
 Rules:
-- General advice only.
-- No diagnosis.
-- Recommend consulting a doctor.
-- Short, structured answers.
+- Use clear paragraphs and bullet points
+- Be concise but helpful
+- Answer based on the patient's predicted condition and health data
+- Give practical advice (diet, lifestyle, precautions)
+- DO NOT give diagnosis or prescriptions
+- Always add a short medical disclaimer at the end
 """
 
-def get_chatbot_reply(query, user_context):
-    disease = user_context.get("final_disease", "Unknown")
-    bmi = user_context.get("bmi", "N/A")
-    risk = user_context.get("risk_level", "N/A")
 
-    # Construct the message
-    full_prompt = f"{SYSTEM_PROMPT}\n\nPatient context:\n- Disease: {disease}\n- BMI: {bmi}\n- Risk: {risk}\n\nUser question:\n{query}"
+def build_context_prompt(context):
+    return f"""
+Patient Health Summary:
+- Predicted Disease: {context.get("final_disease")}
+- BMI: {context.get("bmi")} ({context.get("bmi_category")})
+- Risk Level: {context.get("risk_level")}
+- Outcome: {context.get("outcome", {}).get("prediction")}
+- Status: {context.get("status", {}).get("prediction")}
+- Expected Recovery Days: {context.get("expected_recovery_days")}
 
-    try:
-        # Use a model name from your specific list (e.g., gemini-2.0-flash)
-        response = client.models.generate_content(
-            model="gemini-2.0-flash", 
-            contents=full_prompt
-        )
-        return response.text
-    except Exception as e:
-        return f"Error: {e}"
+Use this information to personalize your answers.
+"""
 
-# Example usage for testing:
-if __name__ == "__main__":
-    context = {"final_disease": "Hypertension", "bmi": "24.5", "risk_level": "Moderate"}
-    print(get_chatbot_reply("What should I eat for breakfast?", context))
+
+def get_chatbot_reply(message, context):
+    prompt = f"""
+{build_context_prompt(context)}
+
+User Question:
+{message}
+
+Answer in a friendly chatbot style using:
+- short paragraphs
+- bullet points where useful
+"""
+
+    response = ollama.chat(
+        model="phi3:mini",   # you can later switch to llama3
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response["message"]["content"] + (
+        "\n\n⚠️ *This information is for educational purposes only. "
+        "Please consult a qualified medical professional.*"
+    )
