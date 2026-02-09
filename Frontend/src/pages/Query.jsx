@@ -8,6 +8,11 @@ const Query = () => {
   const [chat, setChat] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const clearInput = () => {
+    setMessage("");
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!message.trim()) return;
@@ -70,9 +75,20 @@ const Query = () => {
             rows={3}
             required
           />
-          <button className="primary-btn" disabled={loading}>
-            {loading ? "Thinking..." : "Ask"}
-          </button>
+          <div className="chat-actions">
+            <button className="primary-btn" disabled={loading}>
+              {loading ? "Thinking..." : "Ask"}
+            </button>
+
+            <button
+              type="button"
+              className="primary-btn"
+              onClick={clearInput}
+              disabled={loading || !message}
+            >
+              Clear
+            </button>
+          </div>
         </form>
       </div>
     </div>
