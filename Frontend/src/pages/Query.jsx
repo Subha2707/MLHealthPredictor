@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {BsRobot} from "react-icons/bs";
+import { BsRobot } from "react-icons/bs";
 import { HiMiniBeaker } from "react-icons/hi2";
 import ReactMarkdown from "react-markdown";
 
@@ -8,16 +8,17 @@ const Query = () => {
   const [chat, setChat] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  
+  const CHATBOT_ENABLED = import.meta.env.VITE_ENABLE_CHATBOT === "true";
+
   const clearInput = () => {
     setMessage("");
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!message.trim() || !CHATBOT_ENABLED) return;
 
-    
     setChat((prev) => [...prev, { sender: "user", text: message }]);
     setLoading(true);
 
@@ -37,7 +38,7 @@ const Query = () => {
     } catch (err) {
       setChat((prev) => [
         ...prev,
-        { sender: "bot", text: "Server error. Please try again.",err}
+        { sender: "bot", text: "Chatbot is unavailable on the hosted server." ,err}
       ]);
     }
 
@@ -52,6 +53,17 @@ const Query = () => {
         Ask questions based on your health prediction
       </p>
 
+      
+      {!CHATBOT_ENABLED && (
+        <div className="info-card" style={{ marginBottom: "15px" }}>
+          <p>
+            ⚠️ The intelligent chatbot runs <b>locally</b> using a private AI model.
+            <br />
+            It is disabled on the hosted version for stability and cost reasons.
+          </p>
+        </div>
+      )}
+
       <div className="card chat-card">
         <div className="chat-box">
           {chat.map((msg, i) => (
@@ -64,20 +76,32 @@ const Query = () => {
             </div>
           ))}
 
-          {loading && <div className="chat-msg bot"><HiMiniBeaker />Typing...</div>}
+          {loading && (
+            <div className="chat-msg bot">
+              <HiMiniBeaker /> Typing...
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="chat-input">
           <textarea
-            placeholder="Describe your health concern..."
+            placeholder={
+              CHATBOT_ENABLED
+                ? "Describe your health concern..."
+                : "Chatbot is disabled on hosted version"
+            }
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
-            required
+            disabled={!CHATBOT_ENABLED}
           />
+
           <div className="chat-actions">
-            <button className="primary-btn" disabled={loading}>
-              {loading ? "Thinking..." : "Ask"}
+            <button
+              className="primary-btn"
+              disabled={loading || !CHATBOT_ENABLED}
+            >
+              Ask
             </button>
 
             <button

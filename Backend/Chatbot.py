@@ -1,4 +1,10 @@
-import ollama
+import os
+
+USE_OLLAMA = os.getenv("USE_OLLAMA", "false").lower() == "true"
+
+if USE_OLLAMA:
+    import ollama
+
 
 
 SYSTEM_PROMPT = """
@@ -29,19 +35,22 @@ Use this information to personalize your answers.
 
 
 def get_chatbot_reply(message, context):
+
+    if not USE_OLLAMA:
+        return (
+            "⚠️ Chatbot is disabled on the hosted server.\n\n"
+            "Please run the chatbot locally to access the intelligent health assistant."
+        )
+
     prompt = f"""
-{build_context_prompt(context)}
+    {build_context_prompt(context)}
 
-User Question:
-{message}
-
-Answer in a friendly chatbot style using:
-- short paragraphs
-- bullet points where useful
-"""
+    User Question:
+    {message}
+    """
 
     response = ollama.chat(
-        model="phi3:mini",   
+        model="phi3:mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}
@@ -49,6 +58,5 @@ Answer in a friendly chatbot style using:
     )
 
     return response["message"]["content"] + (
-        "\n\n⚠️ *This information is for educational purposes only. "
-        "Please consult a qualified medical professional.*"
+        "\n\n⚠️ *This information is for educational purposes only.*"
     )
