@@ -18,7 +18,7 @@ const Contact = () => {
       </p>
 
       <div className="grid-2">
-        {/* Contact Details */}
+        
         <div className="card">
           <h3><FaHospital/> Hospital Information</h3>
           <p><b>Email:</b> hospital@example.com</p>
@@ -30,7 +30,7 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Contact Form */}
+       
         <div className="card">
           {sent && (
             <p className="success-text">

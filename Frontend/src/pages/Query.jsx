@@ -17,7 +17,7 @@ const Query = () => {
     e.preventDefault();
     if (!message.trim()) return;
 
-    // Add user message
+    
     setChat((prev) => [...prev, { sender: "user", text: message }]);
     setLoading(true);
 

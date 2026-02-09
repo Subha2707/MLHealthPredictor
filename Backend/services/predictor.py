@@ -3,7 +3,7 @@ from .utils import bmi_category, health_risk_score
 from .disease_ensemble import ensemble_disease_prediction
 
 
-# 🔒 EXACT FEATURES USED DURING MODEL TRAINING
+
 EXPECTED_FEATURES = [
     "Age",
     "Height_cm",
@@ -71,28 +71,28 @@ def predict_patient(data, models):
     readmit_df = align_features(user_df, models["readmit"])
     recovery_df = align_features(user_df, models["recovery"])
 
-    # 🔧 OUTCOME (with confidence)
+    # OUTCOME (with confidence)
     outcome_probs = models["outcome"].predict_proba(outcome_df)[0]
     outcome_idx = outcome_probs.argmax()
     outcome_label = models["encoders"]["Outcome"] \
         .inverse_transform([outcome_idx])[0]
     outcome_conf = round(outcome_probs[outcome_idx] * 100, 2)
 
-    # 🔧 STATUS (with confidence)
+    # STATUS (with confidence)
     status_probs = models["status"].predict_proba(status_df)[0]
     status_idx = status_probs.argmax()
     status_label = models["encoders"]["Status"] \
         .inverse_transform([status_idx])[0]
     status_conf = round(status_probs[status_idx] * 100, 2)
 
-    # 🔧 READMISSION (optional confidence added)
+    # READMISSION (optional confidence added)
     readmit_probs = models["readmit"].predict_proba(readmit_df)[0]
     readmit_idx = readmit_probs.argmax()
     readmit_label = models["encoders"]["Readmitted"] \
         .inverse_transform([readmit_idx])[0]
     readmit_conf = round(readmit_probs[readmit_idx] * 100, 2)
 
-    # Recovery days (regression → no confidence)
+    # Recovery days 
     recovery_days = round(float(models["recovery"].predict(recovery_df)[0]), 1)
 
     # -------------------------
@@ -113,7 +113,7 @@ def predict_patient(data, models):
     )
 
     # -------------------------
-    # FINAL RESPONSE (🔥 FIXED)
+    # FINAL RESPONSE 
     # -------------------------
     return {
         "bmi": bmi,

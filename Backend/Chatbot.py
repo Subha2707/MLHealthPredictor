@@ -41,7 +41,7 @@ Answer in a friendly chatbot style using:
 """
 
     response = ollama.chat(
-        model="phi3:mini",   # you can later switch to llama3
+        model="phi3:mini",   
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}

@@ -2,13 +2,13 @@ import numpy as np
 
 def ensemble_disease_prediction(user_df, cluster_model, cluster_disease_models, disease_encoder):
 
-    # ---- Align for cluster model ----
+    
     cluster_df = user_df[cluster_model.feature_names_in_]
 
     cluster = cluster_model.predict(cluster_df)[0]
     cluster_prob = float(max(cluster_model.predict_proba(cluster_df)[0]))
 
-    # ---- Get disease model ----
+    
     disease_model = cluster_disease_models.get(cluster)
 
     if disease_model is None:
@@ -19,7 +19,7 @@ def ensemble_disease_prediction(user_df, cluster_model, cluster_disease_models, 
             "top_diseases": []
         }
 
-    # ---- Align for disease model ----
+    
     disease_df = user_df[disease_model.feature_names_in_]
 
     probs = disease_model.predict_proba(disease_df)[0]

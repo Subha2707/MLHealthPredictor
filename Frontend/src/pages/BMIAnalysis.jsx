@@ -18,7 +18,7 @@ const BMIAnalysis = () => {
     );
   }
 
-  // BMI range mapping (15 – 40)
+  
   const minBMI = 15;
   const maxBMI = 40;
   const bmiPercent = Math.min(
@@ -31,7 +31,7 @@ const BMIAnalysis = () => {
       <h1 className="page-title">BMI & Health Analysis</h1>
       <p className="page-subtitle">Comprehensive health metrics overview</p>
 
-      {/* BMI CARD */}
+    
       <div className="card" style={{ textAlign: "center" }}>
         <h1 style={{ fontSize: "48px", color: "#0b5ed7" }}>
           {data.bmi}
@@ -54,7 +54,7 @@ const BMIAnalysis = () => {
         </span>
       </div>
 
-      {/* HEALTH METRICS */}
+     
       <div className="grid-3" style={{ marginTop: "30px" }}>
         <div className="info-card">
           <h3><FaExclamationTriangle/> Overall Health Risk</h3>

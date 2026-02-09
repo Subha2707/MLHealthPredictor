@@ -21,18 +21,18 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      {/* Logo */}
+     
       <div className="nav-logo">
         <img src={healthaifavicon} alt="HealthPredict Logo" className="nav-logo-img"/>
         <span>HealthPredict</span>
       </div>
 
-      {/* Hamburger */}
+      
       <div className="hamburger" onClick={() => setOpen(!open)}>
         {open ? <FaTimes /> : <FaBars />}
       </div>
 
-      {/* Links */}
+     
       <ul className={`nav-links ${open ? "open" : ""}`}>
         <li><NavLink to="/" end onClick={closeMenu}><FaHome /> Home</NavLink></li>
         <li><NavLink to="/results" onClick={closeMenu}><FaChartBar /> Results</NavLink></li>
