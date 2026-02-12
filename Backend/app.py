@@ -4,7 +4,7 @@ import os
 
 from services.model_loader import load_models
 from services.predictor import predict_patient
-from Chatbot import get_chatbot_reply
+# from Chatbot import get_chatbot_reply
 
 app = Flask(__name__)
 CORS(app)
@@ -53,12 +53,12 @@ def predict():
 # -------------------------
 # Chatbot endpoint
 # -------------------------
-@app.route("/chat", methods=["POST"])
-def chat():
-    msg = request.json.get("message", "")
+# @app.route("/chat", methods=["POST"])
+# def chat():
+#     msg = request.json.get("message", "")
 
-    reply = get_chatbot_reply(msg, USER_CONTEXT)
-    return jsonify({"reply": reply})
+#     reply = get_chatbot_reply(msg, USER_CONTEXT)
+#     return jsonify({"reply": reply})
 
 # -------------------------
 # Run server
