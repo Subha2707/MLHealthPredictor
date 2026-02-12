@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const predictHealth = async (data) => {
-  const response = await fetch("http://localhost:5000/predict", {
+  const response = await fetch(`${API_URL}/predict`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -10,7 +12,7 @@ export const predictHealth = async (data) => {
   let result;
 
   try {
-    result = await response.json(); // ✅ await is CRITICAL
+    result = await response.json(); 
   } catch (err) {
     throw new Error("Invalid JSON response from server",err);
   }
@@ -23,5 +25,5 @@ export const predictHealth = async (data) => {
     );
   }
 
-  return result; // ✅ always return parsed object
+  return result; 
 };
