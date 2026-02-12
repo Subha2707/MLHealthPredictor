@@ -9,8 +9,6 @@ venv/
 .env/
 
 # ML models (VERY IMPORTANT)
-*.pkl
-models/
 *.joblib
 
 # Data files (optional)
