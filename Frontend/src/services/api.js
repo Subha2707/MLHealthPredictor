@@ -1,29 +1,56 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const predictHealth = async (data) => {
+if (!API_URL) {
+  throw new Error("VITE_API_URL is not defined in environment variables");
+}
+
+// Generic API handler
+const handleResponse = async (response) => {
+  let data;
+
+  try {
+    data = await response.json();
+  } catch (error) {
+    throw new Error("Invalid JSON response from server",error);
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data?.details ||
+      data?.error ||
+      "Server Error"
+    );
+  }
+
+  return data;
+};
+
+// ------------------------
+// Predict API
+// ------------------------
+export const predictHealth = async (payload) => {
   const response = await fetch(`${API_URL}/predict`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 
-  let result;
+  return handleResponse(response);
+};
 
-  try {
-    result = await response.json(); 
-  } catch (err) {
-    throw new Error("Invalid JSON response from server",err);
-  }
+// ------------------------
+// Chat API
+// ------------------------
+export const sendChatMessage = async (message) => {
+  const response = await fetch(`${API_URL}/chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ message }),
+  });
 
-  if (!response.ok) {
-    throw new Error(
-      result?.details ||
-      result?.error ||
-      "Server Error"
-    );
-  }
-
-  return result; 
+  return handleResponse(response);
 };

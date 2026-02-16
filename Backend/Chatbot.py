@@ -1,10 +1,12 @@
 import os
+from groq import Groq
 
-USE_OLLAMA = os.getenv("USE_OLLAMA", "false").lower() == "true"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if USE_OLLAMA:
-    import ollama
+if not GROQ_API_KEY:
+    raise ValueError("GROQ_API_KEY not set in environment variables")
 
+client = Groq(api_key=GROQ_API_KEY)
 
 
 SYSTEM_PROMPT = """
@@ -19,7 +21,6 @@ Rules:
 - Always add a short medical disclaimer at the end
 """
 
-
 def build_context_prompt(context):
     return f"""
 Patient Health Summary:
@@ -33,14 +34,7 @@ Patient Health Summary:
 Use this information to personalize your answers.
 """
 
-
 def get_chatbot_reply(message, context):
-
-    if not USE_OLLAMA:
-        return (
-            "⚠️ Chatbot is disabled on the hosted server.\n\n"
-            "Please run the chatbot locally to access the intelligent health assistant."
-        )
 
     prompt = f"""
     {build_context_prompt(context)}
@@ -49,14 +43,14 @@ def get_chatbot_reply(message, context):
     {message}
     """
 
-    response = ollama.chat(
-        model="phi3:mini",
+    chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt}
-        ]
+        ],
+        model="llama-3.1-8b-instant",  
     )
 
-    return response["message"]["content"] + (
+    return chat_completion.choices[0].message.content + (
         "\n\n⚠️ *This information is for educational purposes only.*"
     )

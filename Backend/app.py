@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from services.model_loader import load_models
 from services.predictor import predict_patient
-# from Chatbot import get_chatbot_reply
+from Chatbot import get_chatbot_reply
 
 app = Flask(__name__)
 CORS(app)
@@ -53,12 +55,16 @@ def predict():
 # -------------------------
 # Chatbot endpoint
 # -------------------------
-# @app.route("/chat", methods=["POST"])
-# def chat():
-#     msg = request.json.get("message", "")
+@app.route("/chat", methods=["POST"])
+def chat():
+    try:
+        msg = request.json.get("message", "")
+        reply = get_chatbot_reply(msg, USER_CONTEXT)
+        return jsonify({"reply": reply})
+    except Exception as e:
+        print("Chat error:", e)
+        return jsonify({"error": str(e)}), 500
 
-#     reply = get_chatbot_reply(msg, USER_CONTEXT)
-#     return jsonify({"reply": reply})
 
 # -------------------------
 # Run server
