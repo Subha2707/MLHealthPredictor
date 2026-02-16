@@ -302,6 +302,119 @@ input:focus, textarea:focus {
 input::placeholder, textarea::placeholder {
   color: #555;
 }
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  background-color: #111827;
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.input-wrapper:hover .tooltip,
+.input-wrapper:focus-within .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.unit-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.unit-select:hover {
+  border-color: #4f46e5;
+}
+
+.unit-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.helper-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #555;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unit-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.unit-select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  background: #111827;
+  color: white;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.2s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.input-wrapper:hover .tooltip,
+.input-wrapper:focus-within .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.input-warning {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+}
+
+.warning-icon {
+  color: #dc2626;
+  font-size: 16px;
+}
+
+
+input {
+  transition: border-color 0.2s ease;
+}
 
 .primary-btn {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
