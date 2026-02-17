@@ -49,7 +49,6 @@ The dataset used for training and evaluation is included in this repository for 
 3. Add trained ML model files to `Backend/models/`
 4. Start Flask backend
 5. Start React frontend
-6. Ensure Ollama is running locally
 
 ---
 
