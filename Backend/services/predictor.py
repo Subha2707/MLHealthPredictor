@@ -74,42 +74,43 @@ def predict_patient(data, models):
     # -------------------------
     # CORE ML MODELS
     # -------------------------
-    outcome_df = align_features(user_df, models["outcome"])
-    status_df = align_features(user_df, models["status"])
-    readmit_df = align_features(user_df, models["readmit"])
-    recovery_df = align_features(user_df, models["recovery"])
+    outcome_df = align_features(user_df, models["outcome_model"])
+    status_df = align_features(user_df, models["status_model"])
+    readmit_df = align_features(user_df, models["readmit_model"])
+    recovery_df = align_features(user_df, models["recovery_model"])
 
     # OUTCOME
-    outcome_probs = models["outcome"].predict_proba(outcome_df)[0]
+    outcome_probs = models["outcome_model"].predict_proba(outcome_df)[0]
     outcome_idx = outcome_probs.argmax()
-    outcome_label = models["encoders"]["Outcome"].inverse_transform([outcome_idx])[0]
+    outcome_label = models["label_encoders"]["Outcome"].inverse_transform([outcome_idx])[0]
     outcome_conf = round(outcome_probs[outcome_idx] * 100, 2)
 
     # STATUS
-    status_probs = models["status"].predict_proba(status_df)[0]
+    status_probs = models["status_model"].predict_proba(status_df)[0]
     status_idx = status_probs.argmax()
-    status_label = models["encoders"]["Status"].inverse_transform([status_idx])[0]
+    status_label = models["label_encoders"]["Status"].inverse_transform([status_idx])[0]
     status_conf = round(status_probs[status_idx] * 100, 2)
 
     # READMISSION
-    readmit_probs = models["readmit"].predict_proba(readmit_df)[0]
+    readmit_probs = models["readmit_model"].predict_proba(readmit_df)[0]
     readmit_idx = readmit_probs.argmax()
-    readmit_label = models["encoders"]["Readmitted"].inverse_transform([readmit_idx])[0]
+    readmit_label = models["label_encoders"]["Readmitted"].inverse_transform([readmit_idx])[0]
     readmit_conf = round(readmit_probs[readmit_idx] * 100, 2)
 
     # RECOVERY
-    recovery_days = round(float(models["recovery"].predict(recovery_df)[0]), 1)
+    recovery_days = round(float(models["recovery_model"].predict(recovery_df)[0]), 1)
 
     # -------------------------
     # DISEASE
     # -------------------------
     disease_result = ensemble_disease_prediction(
         user_df,
-        models["disease_model"],
+        models["cluster_model"],
         models["cluster_disease_models"],
-        models["encoders"]["Disease"]
+        models["label_encoders"]["Disease"]
     )
 
+    
     # -------------------------
     # HEALTH RISK
     # -------------------------
@@ -137,7 +138,7 @@ def predict_patient(data, models):
             "prediction": readmit_label,
             "confidence": readmit_conf
         },
-        "disease_cluster": models["encoders"]["Disease_Cluster"]
+        "disease_cluster": models["label_encoders"]["Disease_Cluster"]
             .inverse_transform([disease_result["cluster"]])[0],
 
         "cluster_confidence": round(disease_result["cluster_prob"] * 100, 2),
